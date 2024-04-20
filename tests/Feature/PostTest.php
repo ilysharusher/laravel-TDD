@@ -3,6 +3,8 @@
 namespace Tests\Feature;
 
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Http\Testing\File;
+use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
 class PostTest extends TestCase
@@ -13,16 +15,23 @@ class PostTest extends TestCase
     {
         $this->withoutExceptionHandling();
 
+        Storage::fake('public');
+
         $data = [
             'title' => 'My first post',
             'content' => 'This is my first post content',
-            'image' => 'image.jpg',
+            'image' => File::image('image.jpg'),
         ];
 
         $response = $this->post(route('posts.store'), $data);
-
         $response->assertOk();
 
-        $this->assertDatabaseHas('posts', $data);
+        $this->assertDatabaseHas('posts', [
+            'title' => $data['title'],
+            'content' => $data['content'],
+            'image' => 'images/' . $data['image']->hashName(),
+        ]);
+
+        Storage::disk('public')->assertExists('images/' . $data['image']->hashName());
     }
 }
