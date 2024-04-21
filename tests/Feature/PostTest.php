@@ -36,13 +36,22 @@ class PostTest extends TestCase
 
     public function test_attribute_title_is_required_in_storing_posts()
     {
-        Storage::fake('public');
-
         $data = [
             'title' => '',
         ];
 
         $results = $this->post(route('posts.store'), $data);
         $results->assertSessionHasErrors('title');
+    }
+
+    public function test_attribute_image_is_image_file_in_storing_posts()
+    {
+        $data = [
+            'title' => 'Title',
+            'image' => 'not-an-image-file',
+        ];
+
+        $results = $this->post(route('posts.store'), $data);
+        $results->assertSessionHasErrors('image');
     }
 }
