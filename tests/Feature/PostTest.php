@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Post;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Testing\File;
 use Illuminate\Support\Facades\Storage;
@@ -11,11 +12,16 @@ class PostTest extends TestCase
 {
     use RefreshDatabase;
 
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Storage::fake('public');
+    }
+
     public function test_a_post_can_be_stored()
     {
         $this->withoutExceptionHandling();
-
-        Storage::fake('public');
 
         $data = [
             'title' => 'My first post',
@@ -23,7 +29,7 @@ class PostTest extends TestCase
             'image' => File::image('image.jpg'),
         ];
 
-        $this->post(route('posts.store'), $data);
+        $this->post(route('posts.store'), $data)->assertOk();
 
         $this->assertDatabaseHas('posts', [
             'title' => $data['title'],
@@ -53,5 +59,28 @@ class PostTest extends TestCase
 
         $results = $this->post(route('posts.store'), $data);
         $results->assertSessionHasErrors('image');
+    }
+
+    public function test_a_post_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+
+        $post = Post::factory()->create();
+
+        $data = [
+            'title' => 'My first post updated',
+            'content' => 'This is my first post content updated',
+            'image' => File::image('image.jpg'),
+        ];
+
+        $this->put(route('posts.update', $post), $data)->assertOk();
+
+        $this->assertDatabaseHas('posts', [
+            'title' => $data['title'],
+            'content' => $data['content'],
+            'image' => 'images/' . $data['image']->hashName(),
+        ]);
+
+        $this->assertEquals($post->id, Post::first()->id);
     }
 }

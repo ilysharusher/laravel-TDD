@@ -8,7 +8,7 @@ use Illuminate\Support\Facades\Storage;
 
 class Post extends Model
 {
-    //    use HasFactory;
+    use HasFactory;
 
     protected $fillable = [
         'title',
@@ -18,6 +18,14 @@ class Post extends Model
 
     public function setImageAttribute($value): void
     {
-        $this->attributes['image'] = Storage::disk('public')->put('images', $value);
+        $disk = app()->environment('testing')
+            ? Storage::fake('public')
+            : Storage::disk('public');
+
+        if ($this->image) {
+            $disk->delete($this->image);
+        }
+
+        $this->attributes['image'] = $disk->put('images', $value);
     }
 }

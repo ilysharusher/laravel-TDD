@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\Post\StoreRequest;
+use App\Http\Requests\Post\UpdateRequest;
 use App\Models\Post;
 
 class PostController extends Controller
@@ -32,9 +33,9 @@ class PostController extends Controller
         //
     }
 
-    public function update(StoreRequest $request, Post $post)
+    public function update(UpdateRequest $request, Post $post)
     {
-        //
+        $post->update($request->validated());
     }
 
     public function destroy(Post $post)
