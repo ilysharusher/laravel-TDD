@@ -83,4 +83,15 @@ class PostTest extends TestCase
 
         $this->assertEquals($post->id, Post::first()->id);
     }
+
+    public function test_route_posts_index_is_correct_view_with_posts()
+    {
+        $this->withoutExceptionHandling();
+
+        $posts = Post::factory(20)->create();
+
+        $this->get(route('posts.index'))
+            ->assertViewIs('posts.index')
+            ->assertViewHas('posts', $posts);
+    }
 }
