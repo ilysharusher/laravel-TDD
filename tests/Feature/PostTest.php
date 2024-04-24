@@ -147,4 +147,29 @@ class PostTest extends TestCase
         $this->delete(route('posts.destroy', $post))
             ->assertRedirect(route('login'));
     }
+
+    public function test_posts_create_view_is_correct()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+
+        $this->get(route('posts.create'))
+            ->assertViewIs('posts.create');
+    }
+
+    public function test_posts_edit_view_is_correct()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+
+        $post = Post::factory()->create();
+
+        $this->get(route('posts.edit', $post))
+            ->assertViewIs('posts.edit')
+            ->assertViewHas('post', $post)
+            ->assertSee([
+                $post->title,
+                $post->content
+            ]);
+    }
 }
