@@ -4,6 +4,7 @@
         @foreach ($posts as $post)
             <li>
                 <a href="{{ route('posts.show', $post) }}">{{ $post->title }}</a>
+                <p>{{ $post->content }}</p>
             </li>
         @endforeach
     </ul>

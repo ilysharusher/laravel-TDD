@@ -92,6 +92,25 @@ class PostTest extends TestCase
 
         $this->get(route('posts.index'))
             ->assertViewIs('posts.index')
-            ->assertViewHas('posts', $posts);
+            ->assertViewHas('posts', $posts)
+            ->assertSee([
+                $posts->first()->title,
+                $posts->first()->content
+            ]);
+    }
+
+    public function test_route_posts_show_is_correct_view_with_his_own_post()
+    {
+        $this->withoutExceptionHandling();
+
+        $post = Post::factory()->create();
+
+        $this->get(route('posts.show', $post))
+            ->assertViewIs('posts.show')
+            ->assertViewHas('post', $post)
+            ->assertSee([
+                $post->title,
+                $post->content
+            ]);
     }
 }
