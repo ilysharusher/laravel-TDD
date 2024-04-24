@@ -9,7 +9,10 @@ Route::get('/', function () {
 });
 
 Route::resource('posts', PostController::class)
+    ->except('index', 'show')
     ->middleware('auth');
+Route::resource('posts', PostController::class)
+    ->only('index', 'show');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -21,4 +24,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

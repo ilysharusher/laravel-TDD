@@ -3,6 +3,7 @@
 namespace Tests\Feature;
 
 use App\Models\Post;
+use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Testing\File;
 use Illuminate\Support\Facades\Storage;
@@ -19,9 +20,18 @@ class PostTest extends TestCase
         Storage::fake('public');
     }
 
+    private function signIn()
+    {
+        $user = User::factory()->create();
+        $this->actingAs($user);
+
+        return $user;
+    }
+
     public function test_a_post_can_be_stored()
     {
         $this->withoutExceptionHandling();
+        $this->signIn();
 
         $data = [
             'title' => 'My first post',
@@ -42,6 +52,8 @@ class PostTest extends TestCase
 
     public function test_attribute_title_is_required_in_storing_posts()
     {
+        $this->signIn();
+
         $data = [
             'title' => '',
         ];
@@ -52,6 +64,8 @@ class PostTest extends TestCase
 
     public function test_attribute_image_is_image_file_in_storing_posts()
     {
+        $this->signIn();
+
         $data = [
             'title' => 'Title',
             'image' => 'not-an-image-file',
@@ -64,6 +78,7 @@ class PostTest extends TestCase
     public function test_a_post_can_be_updated()
     {
         $this->withoutExceptionHandling();
+        $this->signIn();
 
         $post = Post::factory()->create();
 
@@ -112,5 +127,24 @@ class PostTest extends TestCase
                 $post->title,
                 $post->content
             ]);
+    }
+
+    public function test_post_can_be_deleted_by_authorized_user()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+
+        $post = Post::factory()->create();
+
+        $this->delete(route('posts.destroy', $post))
+            ->assertOk();
+    }
+
+    public function test_post_can_not_be_deleted_by_unauthorized_user()
+    {
+        $post = Post::factory()->create();
+
+        $this->delete(route('posts.destroy', $post))
+            ->assertRedirect(route('login'));
     }
 }
