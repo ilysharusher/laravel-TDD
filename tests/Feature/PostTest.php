@@ -146,6 +146,10 @@ class PostTest extends TestCase
 
         $this->delete(route('posts.destroy', $post))
             ->assertRedirect(route('login'));
+
+        $this->assertDatabaseHas('posts', [
+            'id' => $post->id,
+        ]);
     }
 
     public function test_posts_create_view_is_correct()
