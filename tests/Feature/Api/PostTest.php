@@ -67,7 +67,7 @@ class PostTest extends TestCase
             ->assertJsonValidationErrors('title');
     }
 
-    /*public function test_attribute_image_is_image_file_in_storing_posts()
+    public function test_attribute_image_is_image_file_in_storing_posts()
     {
         $this->signIn();
 
@@ -76,7 +76,8 @@ class PostTest extends TestCase
             'image' => 'not-an-image-file',
         ];
 
-        $results = $this->post(route('posts.store'), $data);
-        $results->assertSessionHasErrors('image');
-    }*/
+        $this->post(route('posts.store'), $data)
+            ->assertStatus(422)
+            ->assertJsonValidationErrors('image');
+    }
 }
