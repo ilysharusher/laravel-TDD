@@ -7,18 +7,12 @@ use App\Http\Requests\Api\Post\StoreRequest;
 use App\Http\Requests\Api\Post\UpdateRequest;
 use App\Http\Resources\Post\PostResource;
 use App\Models\Post;
-use Illuminate\Http\Request;
 
 class PostController extends Controller
 {
     public function index()
     {
-        //
-    }
-
-    public function create()
-    {
-        //
+        return PostResource::collection(Post::all())->resolve();
     }
 
     public function store(StoreRequest $request)
@@ -29,11 +23,6 @@ class PostController extends Controller
     }
 
     public function show(Post $post)
-    {
-        //
-    }
-
-    public function edit(Post $post)
     {
         //
     }

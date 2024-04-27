@@ -9,7 +9,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 Route::resource('posts', PostController::class)
-    ->except('index', 'show')
+    ->only('store', 'update', 'destroy')
     ->middleware('auth:sanctum');
 Route::resource('posts', PostController::class)
     ->only('index', 'show');

@@ -108,4 +108,21 @@ class PostTest extends TestCase
 
         $this->assertEquals($post->id, Post::first()->id);
     }
+
+    public function test_route_api_posts_index_is_correct()
+    {
+        $this->withoutExceptionHandling();
+
+        $posts = Post::factory(20)->create();
+
+        $this->get(route('api.posts.index'))
+            ->assertJson($posts->map(function ($post) {
+                return [
+                    'id' => $post->id,
+                    'title' => $post->title,
+                    'content' => $post->content,
+                    'image' => $post->image,
+                ];
+            })->toArray());
+    }
 }
