@@ -2,6 +2,7 @@
 
 namespace Tests\Feature\Api;
 
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\Testing\File;
@@ -79,5 +80,32 @@ class PostTest extends TestCase
         $this->post(route('posts.store'), $data)
             ->assertStatus(422)
             ->assertJsonValidationErrors('image');
+    }
+
+    public function test_a_post_can_be_updated()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+
+        $post = Post::factory()->create();
+
+        $data = [
+            'title' => 'My first post updated',
+            'content' => 'This is my first post content updated',
+            'image' => File::image('image.jpg'),
+        ];
+
+        $dataCheck = [
+            'title' => $data['title'],
+            'content' => $data['content'],
+            'image' => 'images/' . $data['image']->hashName(),
+        ];
+
+        $this->put(route('api.posts.update', $post), $data)
+            ->assertJson($dataCheck);
+
+        $this->assertDatabaseHas('posts', $dataCheck);
+
+        $this->assertEquals($post->id, Post::first()->id);
     }
 }
