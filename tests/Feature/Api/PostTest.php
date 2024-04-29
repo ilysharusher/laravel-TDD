@@ -140,4 +140,17 @@ class PostTest extends TestCase
                 'image' => $post->image,
             ]);
     }
+
+    public function test_a_post_can_be_deleted()
+    {
+        $this->withoutExceptionHandling();
+        $this->signIn();
+
+        $post = Post::factory()->create();
+
+        $this->delete(route('api.posts.destroy', $post))
+            ->assertNoContent();
+
+        $this->assertDatabaseMissing('posts', $post->toArray());
+    }
 }
