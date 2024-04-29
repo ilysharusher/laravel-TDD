@@ -153,4 +153,12 @@ class PostTest extends TestCase
 
         $this->assertDatabaseMissing('posts', $post->toArray());
     }
+
+    public function test_a_post_can_be_deleted_only_by_authenticated_user()
+    {
+        $post = Post::factory()->create();
+
+        $this->delete(route('api.posts.destroy', $post))
+            ->assertUnauthorized();
+    }
 }
