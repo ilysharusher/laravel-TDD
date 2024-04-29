@@ -2,15 +2,15 @@
 
 namespace Tests\Unit;
 
+use Nette\Utils\Random;
 use PHPUnit\Framework\TestCase;
 
 class ExampleTest extends TestCase
 {
-    /**
-     * A basic test example.
-     */
-    /*public function test_that_true_is_true(): void
+    public function test_is_this_a_string()
     {
-        $this->assertTrue(true);
-    }*/
+        $this->assertIsString(
+            Random::generate()
+        );
+    }
 }
