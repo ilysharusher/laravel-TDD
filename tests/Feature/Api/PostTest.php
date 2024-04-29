@@ -125,4 +125,19 @@ class PostTest extends TestCase
                 ];
             })->toArray());
     }
+
+    public function test_a_post_can_be_shown()
+    {
+        $this->withoutExceptionHandling();
+
+        $post = Post::factory()->create();
+
+        $this->get(route('api.posts.show', $post))
+            ->assertJson([
+                'id' => $post->id,
+                'title' => $post->title,
+                'content' => $post->content,
+                'image' => $post->image,
+            ]);
+    }
 }

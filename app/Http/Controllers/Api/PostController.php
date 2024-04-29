@@ -24,7 +24,7 @@ class PostController extends Controller
 
     public function show(Post $post)
     {
-        //
+        return PostResource::make($post)->resolve();
     }
 
     public function update(UpdateRequest $request, Post $post)
